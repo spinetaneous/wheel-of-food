@@ -87,7 +87,11 @@ class Wheel():
                 msg += "{0}: {1}\n".format(key, error[key])
             logging.critical(msg)
             raise ValueError(msg)
-        self.choice = random.choice(self.restaurants)
+        try:
+            self.choice = random.choice(self.restaurants)
+        except IndexError:
+            print("No results found. Spin again!")
+            sys.exit()
         return
 
 parser = argparse.ArgumentParser("Hungry and can't decide what to eat? Give the Wheel of Food a spin!")
