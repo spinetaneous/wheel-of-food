@@ -8,6 +8,7 @@ import logging
 import random
 import argparse
 import json
+import sys
 
 logging.basicConfig(level=logging.CRITICAL)
 
@@ -27,7 +28,7 @@ class Wheel():
         self.TOKEN = TOKEN
         self.TOKEN_SECRET = TOKEN_SECRET
         self.base_url = 'https://api.yelp.com/v2/search'
-        self.food_categories = ['Mexican','Japanese']
+        self.food_categories = ['GO HUNGRY','SPIN AGAIN']
 
     def _gen_signed_url(self, url_params):
         """ Generate a signed URL to call using the token and consumer identifiers and their respective secrets.
@@ -63,6 +64,15 @@ class Wheel():
             self.category = self._select_food()
         else:
             self.category = category
+
+        print("You spin the Wheel of Food!")
+        print("The Wheel of Food spins wildly, tossing sandwiches and soups everywhere...")
+        print("The Wheel of Food comes to a halt, landing on {0}!".format(self.category.upper()))
+        print("")
+
+        # No point calling the API if the wheel decides we should go hungry or spin again.
+        if self.category == "GO HUNGRY" or self.category == "SPIN AGAIN":
+            return
         url_params = {'location': location, 'term': self.category, 'limit': '20', 'category_filter': 'food,restaurants'}
         self.signed_url = self._gen_signed_url(url_params)
         logging.debug(self.signed_url)
@@ -80,10 +90,6 @@ class Wheel():
             logging.critical(msg)
             raise ValueError(msg)
         self.choice = random.choice(self.restaurants)
-        print("You spin the Wheel of Food!")
-        print("The Wheel of Food spins wildly, tossing sandwiches and soups everywhere...")
-        print("The Wheel of Food comes to a halt, landing on {0}!".format(self.category.upper()))
-        print("")
         return
 
 parser = argparse.ArgumentParser("Hungry and can't decide what to eat? Give the Wheel of Food a spin!")
@@ -95,6 +101,9 @@ category = args.category
 zipcode = args.zipcode
 wheel = Wheel(CONSUMER_KEY,CONSUMER_SECRET,TOKEN,TOKEN_SECRET)
 wheel.spin(zipcode, category)
+if wheel.category == "GO HUNGRY" or wheel.category == "SPIN AGAIN":
+    sys.exit()
+
 choice = wheel.choice['name']
 url = wheel.choice['url']
 rating = wheel.choice['rating']
@@ -102,7 +111,6 @@ category = wheel.category
 review_count = wheel.choice['review_count']
 display_address = wheel.choice['location']['display_address']
 url = wheel.choice['url']
-
 
 print("Hungry for {0}? Try {1}, rated at {2} stars with {3} reviews!".format(category, choice, rating, review_count).decode('utf-8'))
 print("Address:")

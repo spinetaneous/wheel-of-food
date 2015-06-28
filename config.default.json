@@ -1,6 +1,19 @@
 {
-    "CONSUMER_KEY": "",
-    "CONSUMER_SECRET": "",
-    "TOKEN": "",
-    "TOKEN_SECRET": ""
+    "CONSUMER_KEY": "YOUR_CONSUMER_KEY",
+    "CONSUMER_SECRET": "YOUR_CONSUMER_SECRET",
+    "TOKEN": "YOUR_TOKEN",
+    "TOKEN_SECRET": "YOUR_TOKEN_SECRET",
+    "categories": [
+        "Mexican",
+        "Japanese",
+        "Chinese",
+        "Indian",
+        "Burgers",
+        "American",
+        "Italian",
+        "Korean",
+        "African",
+        "Indonesian",
+        "Thai"
+    ]
 }
