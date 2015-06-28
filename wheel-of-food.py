@@ -30,6 +30,10 @@ class Wheel():
         self.food_categories = ['Mexican','Japanese']
 
     def _gen_signed_url(self, url_params):
+        """ Generate a signed URL to call using the token and consumer identifiers and their respective secrets.
+        url_params contains extra parameters to pass to Yelp's API URL beyond the authentication stuff;
+        In our case, we're using it to pass along the type of food we want and our zip code.
+        returns: signed_url_string """
         self.consumer = oauth2.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
         logging.debug(self.consumer)
         self.request = oauth2.Request(method='GET', url = self.base_url, parameters = url_params)
@@ -49,20 +53,26 @@ class Wheel():
         return self.request.to_url()
 
     def _select_food(self):
+        """ Selects a random food category from the provided category list.
+        Returns: category """
         return random.choice(self.food_categories)
 
     def spin(self,location,category=None):
+        """ Spins the wheel. Hits up Yelp's API for food based on the provided ZIP code and the optional category of food. """
         if category is None:
             self.category = self._select_food()
         else:
             self.category = category
-        self.signed_url = self._gen_signed_url({'location': location, 'term': self.category, 'limit': '10', 'category_filter': 'food,restaurants'})
+        url_params = {'location': location, 'term': self.category, 'limit': '20', 'category_filter': 'food,restaurants'}
+        self.signed_url = self._gen_signed_url(url_params)
+        logging.debug(self.signed_url)
         r = requests.get(self.signed_url)
+        logging.debug(r.content)
         self.restaurants = r.json()['businesses']
         self.choice = random.choice(self.restaurants)
         return
 
-parser = argparse.ArgumentParser("Hungry and can't decide what to eat? Give the Meal Wheel a spin!")
+parser = argparse.ArgumentParser("Hungry and can't decide what to eat? Give the Wheel of Food a spin!")
 parser.add_argument('--zipcode', '-z', help="The ZIP code where you want to search. Required.", required=True)
 parser.add_argument('--category','-c',help="Specify this option if you feel like you know what you want to eat.")
 args = parser.parse_args()
@@ -76,5 +86,6 @@ url = wheel.choice['url']
 rating = wheel.choice['rating']
 category = wheel.category
 review_count = wheel.choice['review_count']
+
 
 print("Hungry for {0}? Try {1}, rated at {2} stars with {3} reviews!".format(category, choice, rating, review_count).decode('utf-8'))
