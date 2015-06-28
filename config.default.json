@@ -16,5 +16,18 @@
         "Indonesian",
         "Thai",
         "Southern"
-    ]
+        ],
+    "adjectives": [
+            "crazily",
+            "wildly",
+            "insanely",
+            "madly",
+            "maniacally",
+            "psychotically",
+            "furiously",
+            "hysterically",
+            "intensely",
+            "violently",
+            "frantically"
+        ]
 }
