@@ -80,6 +80,10 @@ class Wheel():
             logging.critical(msg)
             raise ValueError(msg)
         self.choice = random.choice(self.restaurants)
+        print("You spin the Wheel of Food!")
+        print("The Wheel of Food spins wildly, tossing sandwiches and soups everywhere...")
+        print("The Wheel of Food comes to a halt, landing on {0}!".format(self.category.upper()))
+        print("")
         return
 
 parser = argparse.ArgumentParser("Hungry and can't decide what to eat? Give the Wheel of Food a spin!")
@@ -96,6 +100,13 @@ url = wheel.choice['url']
 rating = wheel.choice['rating']
 category = wheel.category
 review_count = wheel.choice['review_count']
+display_address = wheel.choice['location']['display_address']
+url = wheel.choice['url']
 
 
 print("Hungry for {0}? Try {1}, rated at {2} stars with {3} reviews!".format(category, choice, rating, review_count).decode('utf-8'))
+print("Address:")
+for address in display_address:
+    print(address)
+print("")
+print("Yelp URL: {0}".format(url))
