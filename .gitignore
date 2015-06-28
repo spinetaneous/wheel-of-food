@@ -3,3 +3,6 @@ config.json
 
 # Ignore compiled py code
 *.pyc
+
+# On a Mac, ignore .DS_STORE
+.DS_STORE
