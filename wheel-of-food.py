@@ -28,7 +28,7 @@ class Wheel():
         self.TOKEN = TOKEN
         self.TOKEN_SECRET = TOKEN_SECRET
         self.base_url = 'https://api.yelp.com/v2/search'
-        self.food_categories = ['GO HUNGRY','SPIN AGAIN']
+        self.food_categories = config['categories']
 
     def _gen_signed_url(self, url_params):
         """ Generate a signed URL to call using the token and consumer identifiers and their respective secrets.
