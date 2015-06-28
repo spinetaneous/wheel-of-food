@@ -10,8 +10,6 @@ import argparse
 import json
 import sys
 
-logging.basicConfig(level=logging.CRITICAL)
-
 file = open('config.json','r')
 config = json.loads(file.read())
 file.close()
@@ -58,7 +56,7 @@ class Wheel():
         Returns: category """
         return random.choice(self.food_categories)
 
-    def spin(self,location,category=None):
+    def spin(self, location, category=None, distance=10000):
         """ Spins the wheel. Hits up Yelp's API for food based on the provided ZIP code and the optional category of food. """
         if category is None:
             self.category = self._select_food()
@@ -73,7 +71,7 @@ class Wheel():
         # No point calling the API if the wheel decides we should go hungry or spin again.
         if self.category == "GO HUNGRY" or self.category == "SPIN AGAIN":
             return
-        url_params = {'location': location, 'term': self.category, 'limit': '20', 'category_filter': 'food,restaurants'}
+        url_params = {'location': location, 'term': self.category, 'radius_filter': distance, 'limit': '20', 'category_filter': 'food,restaurants'}
         self.signed_url = self._gen_signed_url(url_params)
         logging.debug(self.signed_url)
         r = requests.get(self.signed_url)
@@ -93,14 +91,24 @@ class Wheel():
         return
 
 parser = argparse.ArgumentParser("Hungry and can't decide what to eat? Give the Wheel of Food a spin!")
-parser.add_argument('--zipcode', '-z', help="The ZIP code where you want to search. Required.", required=True)
+parser.add_argument('--zipcode', '-z', help="The ZIP code where you want to search. Required. (You can also use a city name instead as well.)", required=True)
+parser.add_argument('--distance', '-d', help="Distance in meters from the ZIP code. Default is 10km, or about 6.2 miles.")
 parser.add_argument('--category','-c',help="Specify this option if you feel like you know what you want to eat.")
+parser.add_argument('--debug',action='store_true', default = False, help=argparse.SUPPRESS)
 args = parser.parse_args()
+
+if args.debug:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.CRITICAL)
 
 category = args.category
 zipcode = args.zipcode
+distance = args.distance
+if distance is None:
+    distance = 10000
 wheel = Wheel(CONSUMER_KEY,CONSUMER_SECRET,TOKEN,TOKEN_SECRET)
-wheel.spin(zipcode, category)
+wheel.spin(zipcode, category, distance)
 if wheel.category == "GO HUNGRY" or wheel.category == "SPIN AGAIN":
     sys.exit()
 
