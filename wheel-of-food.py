@@ -68,7 +68,17 @@ class Wheel():
         logging.debug(self.signed_url)
         r = requests.get(self.signed_url)
         logging.debug(r.content)
-        self.restaurants = r.json()['businesses']
+        # If we passed proper authentication, we should be able to return a list of businesses.
+        # Otherwise, we get the error and print it to the user.
+        try:
+            self.restaurants = r.json()['businesses']
+        except KeyError:
+            msg = "Yelp returned an error. The error details:\n"
+            error = r.json()['error']
+            for key in error.keys():
+                msg += "{0}: {1}\n".format(key, error[key])
+            logging.critical(msg)
+            raise ValueError(msg)
         self.choice = random.choice(self.restaurants)
         return
 
