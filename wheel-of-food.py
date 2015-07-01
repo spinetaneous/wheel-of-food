@@ -131,7 +131,10 @@ review_count = wheel.choice['review_count']
 display_address = wheel.choice['location']['display_address']
 url = wheel.choice['url']
 
-print("Hungry for {0}? Try {1}, rated at {2} stars with {3} reviews!".format(category, choice, rating, review_count).decode('utf-8'))
+# Some restaurants come with non-ASCII-encoded letters. When that happens, let's force the encoding to be utf-8 and try again.
+choice = choice.encode('utf-8', 'replace')
+msg = "Hungry for {0}? Try {1}, rated at {2} stars with {3} reviews!".format(category, choice, rating, review_count)
+print(msg)
 print("Address:")
 for address in display_address:
     print(address)
