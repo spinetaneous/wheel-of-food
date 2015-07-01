@@ -66,7 +66,7 @@ class Wheel():
             self.category = category
         
         if random.choice([True, False]) == True:
-            toss_food = ", tossing %s and %s everywhere..." % (self.foods[random.randint(0, len(self.foods))], self.foods[random.randint(0, len(self.foods))])
+            toss_food = ", tossing {0} and {1} everywhere...".format(self.foods[random.randint(0, len(self.foods))], self.foods[random.randint(0, len(self.foods))])
         else:
             toss_food = "..."
             
