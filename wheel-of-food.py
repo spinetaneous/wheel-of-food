@@ -66,12 +66,12 @@ class Wheel():
             self.category = category
         
         if random.choice([True, False]) == True:
-            toss_food = ", tossing {0} and {1} everywhere...".format(self.foods[random.randint(0, len(self.foods))], self.foods[random.randint(0, len(self.foods))])
+            toss_food = ", tossing {0} and {1} everywhere...".format(self.foods[random.randint(0, len(self.foods)-1)], self.foods[random.randint(0, len(self.foods))])
         else:
             toss_food = "..."
             
         print("You spin the Wheel of Food!")
-        print("The Wheel of Food spins {0}{1}".format(self.adjectives[random.randint(0, len(self.adjectives))], toss_food))
+        print("The Wheel of Food spins {0}{1}".format(self.adjectives[random.randint(0, len(self.adjectives)-1)], toss_food))
         print("The Wheel of Food comes to a halt, landing on {0}!".format(self.category.upper()))
         print("")
 
